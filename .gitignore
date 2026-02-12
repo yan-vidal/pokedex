@@ -34,3 +34,7 @@ Thumbs.db
 
 # angular
 .angular/
+
+# other
+data/mongodb
+.env
