@@ -12,6 +12,6 @@ import { IPokemonDetails } from '@shared/interfaces/pokemon.interface';
 })
 export class LeftScreenComponent {
   pokemon = input<IPokemonDetails | null>(null);
-  
+  viewMode = input<'artwork' | 'details'>('artwork');
   isOpen = input<boolean>(false);
 }

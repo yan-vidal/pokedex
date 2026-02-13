@@ -20,6 +20,7 @@ export class PokedexShellComponent implements OnInit {
   private readonly authService = inject(IAuthService);
 
   isOpen = signal(false);
+  viewMode = signal<'artwork' | 'details'>('artwork');
   pokemons = signal<IPokemon[]>([]);
   selectedPokemon = signal<IPokemonDetails | null>(null);
   
@@ -34,6 +35,7 @@ export class PokedexShellComponent implements OnInit {
         this.pokemons.set([]);
         this.selectedPokemon.set(null);
         this.isOpen.set(false);
+        untracked(() => this.viewMode.set('artwork'));
       }
     }, { allowSignalWrites: true });
   }
@@ -63,7 +65,7 @@ export class PokedexShellComponent implements OnInit {
   }
 
   toggleView(): void {
-    // Action not implemented yet
+    this.viewMode.update(v => v === 'artwork' ? 'details' : 'artwork');
   }
 
   toggleOpen(): void {
