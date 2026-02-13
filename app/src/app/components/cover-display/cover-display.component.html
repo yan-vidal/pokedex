@@ -1,13 +1,5 @@
 <div class="absolute inset-0 bg-red-600 rounded-l-2xl border-4 border-red-800 shadow-xl flex flex-col p-6 items-center justify-center">
     
-    <!-- Logout Button -->
-    @if (isLoggedIn()) {
-        <button (click)="logout()" 
-                class="absolute top-4 left-4 z-30 bg-red-900/50 border border-red-500 text-red-200 text-[8px] px-2 py-1 rounded hover:bg-red-600 hover:text-white transition-colors uppercase tracking-widest font-bold">
-            LOGOUT
-        </button>
-    }
-
     <!-- Triangular Decoration -->
     <div class="absolute top-10 right-10 w-0 h-0 border-l-[30px] border-l-transparent border-b-[30px] border-b-yellow-500 border-r-[30px] border-r-transparent rotate-45 opacity-80"></div>
 
@@ -16,29 +8,39 @@
         <!-- Scanline effect -->
         <div class="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%)] z-10 pointer-events-none bg-[length:100%_4px]"></div>
         
+        <!-- Logout Button (Inside Visor) -->
+        @if (isLoggedIn()) {
+            <button (click)="logout()" 
+                    class="absolute top-2 right-2 z-30 bg-red-900/50 border border-red-500 text-red-200 text-[8px] px-2 py-0.5 rounded hover:bg-red-600 hover:text-white transition-colors uppercase tracking-widest font-bold">
+                LOGOUT
+            </button>
+        }
+
         <div class="relative z-20 font-mono text-green-500 text-xs flex flex-col gap-3">
             <div class="text-center border-b border-green-800 pb-1 mb-1 tracking-widest font-bold"
-                 [ngClass]="{ 'text-yellow-500': mode() === 'register', 'text-green-400': mode() === 'login' }">
+                 [ngClass]="{ 'text-yellow-500': mode() === 'register', 'text-green-400': mode() === 'login' && !isLoggedIn(), 'text-blue-400': isLoggedIn() }">
                 {{ statusMessage() }}
             </div>
             
             <!-- Inputs -->
             <div class="space-y-3">
-                <div (click)="activeField.set('user')"
-                     class="flex flex-col gap-1 cursor-pointer group">
+                <div (click)="!isLoggedIn() && activeField.set('user')"
+                     class="flex flex-col gap-1 group"
+                     [ngClass]="{ 'cursor-pointer': !isLoggedIn() }">
                     <span class="text-[9px] text-green-700 group-hover:text-green-500">TRAINER ID</span>
                     <div class="bg-green-900/20 border border-green-800 p-1.5 h-7 flex items-center transition-colors" 
-                         [ngClass]="{ 'border-green-400 bg-green-900/40': activeField() === 'user' }">
-                        <span class="tracking-widest">{{username()}}@if (activeField() === 'user') { <span class="animate-pulse">_</span> }</span>
+                         [ngClass]="{ 'border-green-400 bg-green-900/40': activeField() === 'user' && !isLoggedIn() }">
+                        <span class="tracking-widest">{{username()}}@if (activeField() === 'user' && !isLoggedIn()) { <span class="animate-pulse">_</span> }</span>
                     </div>
                 </div>
 
-                <div (click)="activeField.set('pass')"
-                     class="flex flex-col gap-1 cursor-pointer group">
+                <div (click)="!isLoggedIn() && activeField.set('pass')"
+                     class="flex flex-col gap-1 group"
+                     [ngClass]="{ 'cursor-pointer': !isLoggedIn() }">
                     <span class="text-[9px] text-green-700 group-hover:text-green-500">ACCESS CODE</span>
                     <div class="bg-green-900/20 border border-green-800 p-1.5 h-7 flex items-center transition-colors"
-                         [ngClass]="{ 'border-green-400 bg-green-900/40': activeField() === 'pass' }">
-                        <span class="tracking-widest">{{'*'.repeat(password().length)}}@if (activeField() === 'pass') { <span class="animate-pulse">_</span> }</span>
+                         [ngClass]="{ 'border-green-400 bg-green-900/40': activeField() === 'pass' && !isLoggedIn() }">
+                        <span class="tracking-widest">{{isLoggedIn() ? '********' : '*'.repeat(password().length)}}@if (activeField() === 'pass' && !isLoggedIn()) { <span class="animate-pulse">_</span> }</span>
                     </div>
                 </div>
             </div>
@@ -50,34 +52,50 @@
                 </div>
             }
 
-            <!-- Touch Keyboard -->
-            <div class="grid grid-cols-6 gap-1 mt-1 pt-2 border-t border-green-900/50">
-                @for (k of keyboardKeys; track k) {
-                    <button (click)="handleKeyPress(k)"
-                            [disabled]="isLoading()"
-                            class="bg-green-900/30 border border-green-800 text-[8px] h-6 rounded hover:bg-green-500 hover:text-black active:scale-95 transition-colors disabled:opacity-50">
-                        {{k}}
+            @if (!isLoggedIn()) {
+                <!-- Touch Keyboard -->
+                <div class="grid grid-cols-6 gap-1 mt-1 pt-2 border-t border-green-900/50">
+                    @for (k of keyboardKeys; track k) {
+                        <button (click)="handleKeyPress(k)"
+                                [disabled]="isLoading()"
+                                class="bg-green-900/30 border border-green-800 text-[8px] h-6 rounded hover:bg-green-500 hover:text-black active:scale-95 transition-colors disabled:opacity-50">
+                            {{k}}
+                        </button>
+                    }
+                    <button (click)="handleKeyPress('DEL')" class="bg-red-900/30 border border-red-800 text-red-500 text-[8px] h-6 rounded col-span-2 hover:bg-red-500 hover:text-white">DEL</button>
+                    
+                    @if (mode() === 'login') {
+                        <button (click)="handleAction()" 
+                                [disabled]="isLoading()"
+                                class="bg-green-600 text-black font-bold text-[8px] h-6 rounded col-span-4 hover:bg-green-400 uppercase tracking-wider disabled:opacity-50">
+                            {{ isLoading() ? 'Processing...' : 'Confirm Identity' }}
+                        </button>
+                    } @else {
+                        <button (click)="handleAction()" 
+                                class="bg-yellow-600 text-black font-bold text-[8px] h-6 rounded col-span-2 hover:bg-yellow-400 uppercase tracking-wider">
+                            CREATE ID
+                        </button>
+                        <button (click)="cancelRegister()" 
+                                class="bg-slate-800 text-white font-bold text-[8px] h-6 rounded col-span-2 hover:bg-slate-700 uppercase tracking-wider">
+                            CANCEL
+                        </button>
+                    }
+                </div>
+            } @else {
+                <!-- Logged In View: Avatar and Settings -->
+                <div class="mt-1 pt-4 border-t border-green-900/50 flex flex-col items-center gap-4 animate-fade-in">
+                    <!-- Generic Avatar -->
+                    <div class="w-20 h-20 bg-green-900/20 border-2 border-green-500 rounded-full flex items-center justify-center relative overflow-hidden">
+                        <div class="w-12 h-12 bg-green-500/40 rounded-full absolute -bottom-2"></div>
+                        <div class="w-6 h-6 bg-green-500/40 rounded-full absolute top-4"></div>
+                        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.4)_100%)]"></div>
+                    </div>
+
+                    <button class="w-full bg-slate-800 border border-slate-600 text-[10px] py-2 rounded text-slate-300 flex items-center justify-center gap-2 hover:bg-slate-700 transition-colors">
+                        <span class="text-xs">⚙</span> SYSTEM CONFIGURATIONS
                     </button>
-                }
-                <button (click)="handleKeyPress('DEL')" class="bg-red-900/30 border border-red-800 text-red-500 text-[8px] h-6 rounded col-span-2 hover:bg-red-500 hover:text-white">DEL</button>
-                
-                @if (mode() === 'login') {
-                    <button (click)="handleAction()" 
-                            [disabled]="isLoading()"
-                            class="bg-green-600 text-black font-bold text-[8px] h-6 rounded col-span-4 hover:bg-green-400 uppercase tracking-wider disabled:opacity-50">
-                        {{ isLoading() ? 'Processing...' : 'Confirm Identity' }}
-                    </button>
-                } @else {
-                    <button (click)="handleAction()" 
-                            class="bg-yellow-600 text-black font-bold text-[8px] h-6 rounded col-span-2 hover:bg-yellow-400 uppercase tracking-wider">
-                        CREATE ID
-                    </button>
-                    <button (click)="cancelRegister()" 
-                            class="bg-slate-800 text-white font-bold text-[8px] h-6 rounded col-span-2 hover:bg-slate-700 uppercase tracking-wider">
-                        CANCEL
-                    </button>
-                }
-            </div>
+                </div>
+            }
         </div>
     </div>
 

@@ -97,6 +97,7 @@ export class CoverDisplayComponent implements OnInit {
     this.authService.logout();
     this.username.set('');
     this.password.set('');
+    this.activeField.set('user');
     this.statusMessage.set('IDENTITY VERIFICATION');
     this.errorMessage.set(null);
     this.mode.set('login');
