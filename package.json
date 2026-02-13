@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "start:api": "pnpm --filter pokedex-api start",
+    "start:api:prod": "pnpm --filter pokedex-api start:prod",
     "start:app": "pnpm --filter pokedex-app start",
     "build": "pnpm --filter ./... build",
     "test": "pnpm --filter ./... test"
