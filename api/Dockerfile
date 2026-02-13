@@ -15,18 +15,14 @@ COPY shared ./shared/
 
 RUN pnpm --filter pokedex-api build
 
-# --- Stage 2: Production
+RUN pnpm --filter pokedex-api --prod deploy /app/pruned
+
+# --- Stage 2: Production ---
 FROM node:20-alpine
 
 WORKDIR /app
 
-RUN npm install -g pnpm
-
-COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
-COPY api/package.json ./api/
-COPY shared/package.json ./shared/
-
-RUN pnpm install --prod --frozen-lockfile
+COPY --from=builder /app/pruned/node_modules ./node_modules
 
 COPY --from=builder /app/api/dist ./dist
 
