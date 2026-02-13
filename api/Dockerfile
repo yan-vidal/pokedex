@@ -15,7 +15,7 @@ COPY shared ./shared/
 
 RUN pnpm --filter pokedex-api build
 
-RUN pnpm --filter pokedex-api --prod deploy /app/pruned
+RUN pnpm --filter pokedex-api --prod deploy --legacy /app/pruned
 
 # --- Stage 2: Production ---
 FROM node:20-alpine
