@@ -1,4 +1,4 @@
-import { Component, signal, inject, OnInit, ChangeDetectionStrategy, effect } from '@angular/core';
+import { Component, signal, inject, OnInit, ChangeDetectionStrategy, effect, untracked } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PokemonService } from '../../services/pokemon.service';
 import { LeftScreenComponent } from '../left-screen/left-screen.component';
@@ -24,12 +24,12 @@ export class PokedexShellComponent implements OnInit {
   selectedPokemon = signal<IPokemonDetails | null>(null);
   
   offset = signal(0);
-  limit = 10;
+  limit = 15;
 
   constructor() {
     effect(() => {
       if (this.authService.isLoggedIn()) {
-        this.loadPokemons();
+        untracked(() => this.loadPokemons());
       } else {
         this.pokemons.set([]);
         this.selectedPokemon.set(null);
@@ -42,7 +42,10 @@ export class PokedexShellComponent implements OnInit {
 
   loadPokemons(): void {
     this.pokemonService.getPokemons(this.limit, this.offset()).subscribe({
-      next: (data) => this.pokemons.set(data.results),
+      next: (data) => {
+        const current = this.pokemons();
+        this.pokemons.set([...current, ...data.results]);
+      },
       error: (err) => console.error('Error loading pokemons', err)
     });
   }
@@ -54,16 +57,13 @@ export class PokedexShellComponent implements OnInit {
     });
   }
 
-  nextPage(): void {
+  loadMore(): void {
     this.offset.update(v => v + this.limit);
     this.loadPokemons();
   }
 
-  prevPage(): void {
-    if (this.offset() > 0) {
-      this.offset.update(v => Math.max(0, v - this.limit));
-      this.loadPokemons();
-    }
+  toggleView(): void {
+    // Action not implemented yet
   }
 
   toggleOpen(): void {

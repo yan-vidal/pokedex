@@ -5,9 +5,49 @@
 
 /* Container who holds both parts */
 .pokedex-body {
-  transform-style: preserve-3d;
+  --pokedex-width-open: 652px;
+  --pokedex-width-closed: 332px;
+  --pokedex-height: 520px;
+  
   display: flex;
-  transition: all 0.7s ease-in-out;
+  transform-style: preserve-3d;
+  transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Centering logic: 
+     When closed, the right side (320px) is folded over the left.
+     The flex container remains 672px wide. 
+     To center the visual part (352px), we shift it by 160px. */
+  transform: translateX(160px);
+
+  /* Dynamic scale to fit screen while maintaining aspect ratio */
+  scale: min(
+    calc((100vw - 40px) / var(--pokedex-width-open)),
+    calc((100vh - 40px) / var(--pokedex-height)),
+    1
+  );
+
+  &.open {
+    transform: translateX(0);
+  }
+
+  /* Specific mobile adjustments to ensure it doesn't clip */
+  @media (max-width: 768px) {
+    --padding: 20px;
+    scale: min(
+      calc((100vw - var(--padding)) / var(--pokedex-width-open)),
+      calc((100vh - var(--padding)) / var(--pokedex-height)),
+      0.9
+    );
+    
+    /* On very small screens when closed, we can afford to be a bit larger */
+    &:not(.open) {
+      scale: min(
+        calc((100vw - var(--padding)) / var(--pokedex-width-closed)),
+        calc((100vh - var(--padding)) / var(--pokedex-height)),
+        1.1
+      );
+    }
+  }
 }
 
 .animate-fade-in {

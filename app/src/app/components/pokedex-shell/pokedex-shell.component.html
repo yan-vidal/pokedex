@@ -8,7 +8,7 @@
   <!-- Main Container -->
   <div 
     class="pokedex-body"
-    [style.transform]="isOpen() ? 'translateX(-160px)' : 'translateX(0)'"
+    [class.open]="isOpen()"
   >
 
     <!-- Left Screen -->
@@ -20,7 +20,7 @@
 
 
     <!-- Central Hinge -->
-    <div class="w-8 h-[460px] mt-[30px] bg-red-700 border-x-4 border-red-900 z-20 flex flex-col justify-around py-10 rounded-full shadow-[inset_0_0_10px_rgba(0,0,0,0.5)]">
+    <div class="w-3 h-[460px] mt-[30px] bg-red-700 border-x-2 border-red-900 z-20 flex flex-col justify-around py-10 rounded-full shadow-[inset_0_0_10px_rgba(0,0,0,0.5)]">
       <div class="h-8 w-full border-y-2 border-red-900 bg-red-600"></div>
       <div class="h-8 w-full border-y-2 border-red-900 bg-red-600"></div>
     </div>
@@ -28,7 +28,7 @@
 
     <!-- Right Screen (rotating) -->
     <div 
-      class="relative w-80 h-[520px] mt-0 transition-all duration-700 origin-left"
+      class="relative w-80 h-[500px] mt-[20px]  transition-all duration-700 origin-left"
       style="transform-style: preserve-3d;"
       [style.transform]="isOpen() ? 'rotateY(0deg)' : 'rotateY(-180deg)'"
       [class.z-30]="isOpen()"
@@ -42,8 +42,8 @@
         [selectedPokemon]="selectedPokemon()"
         [isOpen]="isOpen()"
         (onSelect)="selectPokemon($event)"
-        (onNext)="nextPage()"
-        (onPrev)="prevPage()">
+        (onNext)="toggleView()"
+        (onPrev)="loadMore()">
       </app-right-screen>
 
 

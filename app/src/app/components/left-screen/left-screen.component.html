@@ -1,7 +1,23 @@
 <div class="relative w-80 h-[520px] bg-red-600 rounded-l-2xl border-4 border-red-800 shadow-2xl flex flex-col p-6">
-          
+    
+    <!-- Top Relief Illusion (Shadow/Highlight) -->
+    <svg class="absolute inset-0 w-full h-full pointer-events-none z-0" viewBox="0 0 320 520" preserveAspectRatio="none">
+      <!-- Dark Shadow for depth -->
+      <path d="M -20 115 Q 110 30, 320 18" 
+            fill="none" 
+            stroke="#450a0a" 
+            stroke-width="4" 
+            opacity="0.4" />
+      <!-- Light highlight for the edge -->
+      <path d="M -15 110 Q 110 25, 320 18" 
+            fill="none" 
+            stroke="#fca5a5" 
+            stroke-width="1" 
+            opacity="0.3" />
+    </svg>
+
     <!-- Light Upper Indicator -->
-    <div class="flex gap-4 mb-4 items-start">
+    <div class="relative z-10 flex gap-4 mb-4 items-start -translate-y-2">
       <div class="w-12 h-12 bg-blue-400 rounded-full border-4 border-white shadow-[0_0_15px_rgba(96,165,250,0.8)] flex items-center justify-center relative overflow-hidden">
          <div class="absolute inset-0 bg-gradient-to-tr from-blue-600 to-transparent opacity-50"></div>
          <div class="w-4 h-4 bg-white/60 rounded-full -mt-4 -ml-4 z-10"></div>
