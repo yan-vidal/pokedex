@@ -29,9 +29,9 @@ services:
     build:
       context: .
       dockerfile: app/Dockerfile
-    container_name: pokedex_app
-    restart: always
-    ports:
-      - "${APP_PORT}:80"
-    depends_on:
-      - api
+      args:
+        NG_APP_API_URL: ${NG_APP_API_URL}
+    container_name: pokedex_front_builder
+    restart: "no" 
+    volumes:
+      - ./dist-front:/output

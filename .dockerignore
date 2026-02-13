@@ -1,0 +1,13 @@
+data/
+mongo-data/
+postgres-data/
+
+node_modules/
+dist/
+dist-front/
+
+.git/
+.vscode/
+.idea/
+
+.env
