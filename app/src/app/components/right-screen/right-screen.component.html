@@ -10,13 +10,13 @@
     </svg>
 
     <!-- Information Screen -->
-    <div class="bg-slate-800 rounded p-3 h-28 border-4 border-slate-900 shadow-[inset_0_0_10px_rgba(0,0,0,1)] overflow-hidden mb-6 relative">
+    <div class="bg-slate-800 rounded pt-1.5 px-3 pb-3 h-20 border-4 border-slate-900 shadow-[inset_0_0_10px_rgba(0,0,0,1)] overflow-hidden mb-6 relative">
        <div class="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%)] z-10 pointer-events-none bg-[length:100%_4px]"></div>
       
       @if (selectedPokemon(); as pk) {
-        <div class="text-[10px] text-green-400 font-mono leading-tight">
+        <div class="text-[12px] text-green-400 font-mono leading-tight">
           <p class="font-bold border-b border-green-900/50 mb-1 pb-1 uppercase">
-            TYPE: {{ pk.types[0].type.name }} {{ pk.types[1] ? '/ ' + pk.types[1].type.name : '' }}
+            {{ pk.name }}: {{ pk.types[0].type.name }} {{ pk.types[1] ? '/ ' + pk.types[1].type.name : '' }}
           </p>
           <p class="mb-2 text-green-300">
             HT: {{ pk.height / 10 }}m | WT: {{ pk.weight / 10 }}kg
@@ -24,7 +24,7 @@
           <p class="opacity-80">EXP: {{ pk.base_experience }} | ABILITY: {{ pk.abilities[0].ability.name | uppercase }}</p>
         </div>
       } @else {
-        <div class="h-full flex items-center justify-center text-green-900/50 text-[10px] font-mono animate-pulse">
+        <div class="h-full flex items-center justify-center text-green-900/50 text-[12px] font-mono animate-pulse">
             SELECT POKEMON
         </div>
       }
@@ -40,28 +40,18 @@
           [class.ring-yellow-400]="selectedPokemon()?.name === pk.name"
         >
           <img [src]="getPokemonImageUrl(pk.url)" 
-               class="w-full h-full object-contain p-0.5" 
-               [class.grayscale]="selectedPokemon()?.name !== pk.name" 
-               [class.opacity-50]="selectedPokemon()?.name !== pk.name">
+               class="w-full h-full object-contain">
         </button>
       }
 
-      <!-- Fillers (To keep the grid nice if less than 10) -->
-      @for (i of [].constructor(Math.max(0, 10 - pokemons().length)); track $index) {
+      <!-- Fillers (To keep the grid nice if less than 15) -->
+      @for (i of [].constructor(Math.max(0, 15 - pokemons().length)); track $index) {
         <div class="aspect-square bg-blue-900/20 border border-blue-900/30 rounded"></div>
       }
     </div>
 
     <!-- Footer Navigation Buttons -->
     <div class="mt-auto">
-       <div class="flex justify-between items-center mb-4">
-          <div class="flex gap-1">
-             <div class="w-10 h-2 bg-slate-800 rounded-full"></div>
-             <div class="w-10 h-2 bg-slate-800 rounded-full"></div>
-          </div>
-          <div class="w-6 h-6 bg-yellow-400 rounded-full border-2 border-yellow-600 shadow-lg animate-pulse"></div>
-       </div>
-
        <div class="flex gap-4">
           <button (click)="onPrev.emit()"
             class="flex-1 h-10 bg-slate-800 rounded border-b-4 border-black active:border-b-0 active:translate-y-1 transition-all flex items-center justify-center group"

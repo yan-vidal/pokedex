@@ -24,7 +24,7 @@ export class PokedexShellComponent implements OnInit {
   selectedPokemon = signal<IPokemonDetails | null>(null);
   
   offset = signal(0);
-  limit = 10;
+  limit = 15;
 
   constructor() {
     effect(() => {
