@@ -2,6 +2,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { AuthUser, AuthResponse } from '@shared/interfaces/auth.interface';
+import { environment } from '../../environments/environment';
 import { IAuthService } from './auth.service.interface';
 
 @Injectable({
@@ -9,7 +10,7 @@ import { IAuthService } from './auth.service.interface';
 })
 export class AuthService extends IAuthService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:3000/api';
+  private readonly apiUrl = environment.apiUrl;
 
   override currentUser = signal<AuthUser | null>(null);
   override isLoggedIn = signal(false);
