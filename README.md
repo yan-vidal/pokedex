@@ -6,10 +6,11 @@ A high-fidelity, interactive Pokedex prototype built with **Angular 19** and **N
 
 <div align="center">
   <img src="https://i.imgur.com/PjRyaCb.png" alt="Pokedex Closed" width="45%"/>
+</div>
+
+<div align="center">
   <img src="https://i.imgur.com/4nBmbU6.png" alt="Pokedex Open" width="45%"/>
 </div>
-<p align="center"><i>Place your actual project screenshots here!</i></p>
-
 ---
 
 ## 🚀 Getting Started

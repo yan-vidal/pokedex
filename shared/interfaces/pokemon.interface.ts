@@ -42,4 +42,44 @@ export interface IPokemonDetails {
       };
     };
   };
+  stats: {
+    base_stat: number;
+    effort: number;
+    stat: {
+      name: string;
+      url: string;
+    };
+  }[];
+  moves: {
+    move: {
+      name: string;
+      url: string;
+    };
+    version_group_details: any[];
+  }[];
+  forms: {
+    name: string;
+    url: string;
+  }[];
+  game_indices: {
+    game_index: number;
+    version: {
+      name: string;
+      url: string;
+    };
+  }[];
+  held_items: {
+    item: {
+      name: string;
+      url: string;
+    };
+  }[];
+  cries?: {
+    latest: string;
+    legacy: string;
+  };
+  species: {
+    name: string;
+    url: string;
+  };
 }
