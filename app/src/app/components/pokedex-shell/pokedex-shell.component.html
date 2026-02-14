@@ -42,6 +42,7 @@
         [pokemons]="pokemons()"
         [selectedPokemon]="selectedPokemon()"
         [isOpen]="isOpen()"
+        [isLoading]="isListLoading()"
         (onSelect)="selectPokemon($event)"
         (onNext)="toggleView()"
         (onPrev)="loadMore()">

@@ -37,8 +37,16 @@
         </div>
 
         <!-- Grid of Blue Buttons (List) - Fixed height for 3 rows -->
-        <div class="h-[160px] overflow-y-auto mb-6 pr-2 custom-scrollbar scroll-smooth relative z-20">
-          <div class="grid grid-cols-5 gap-1">
+        <div #scrollContainer class="h-[160px] overflow-y-auto mb-6 pr-2 custom-scrollbar scroll-smooth relative z-20">
+          
+          @if (isLoading()) {
+            <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-[1px] z-30 flex flex-col items-center justify-center rounded">
+              <div class="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-2"></div>
+              <span class="text-[8px] text-blue-400 font-mono animate-pulse uppercase tracking-widest">Updating Database...</span>
+            </div>
+          }
+
+          <div class="grid grid-cols-5 gap-1 pt-1" [class.pointer-events-none]="isLoading()" [class.opacity-50]="isLoading()">
             @for (pk of pokemons(); track pk.name) {
               <button 
                 (click)="onSelect.emit(pk.name)"
@@ -57,7 +65,8 @@
         <div class="mt-auto">
            <div class="flex gap-4">
               <button (click)="onPrev.emit()"
-                class="flex-1 h-12 bg-slate-800 rounded border-b-4 border-black active:border-b-0 active:translate-y-1 transition-all flex flex-col items-center justify-center leading-none text-[10px] text-slate-300 font-bold tracking-tighter uppercase"
+                [disabled]="isLoading()"
+                class="flex-1 h-12 bg-slate-800 rounded border-b-4 border-black active:border-b-0 active:translate-y-1 disabled:opacity-50 disabled:translate-y-0 disabled:border-b-4 transition-all flex flex-col items-center justify-center leading-none text-[10px] text-slate-300 font-bold tracking-tighter uppercase"
               >
                  <span>LOAD</span>
                  <span>MORE</span>

@@ -23,6 +23,7 @@ export class PokedexShellComponent implements OnInit {
   viewMode = signal<'artwork' | 'details'>('artwork');
   pokemons = signal<IPokemon[]>([]);
   selectedPokemon = signal<IPokemonDetails | null>(null);
+  isListLoading = signal(false);
   
   offset = signal(0);
   limit = 15;
@@ -43,12 +44,17 @@ export class PokedexShellComponent implements OnInit {
   ngOnInit(): void {}
 
   loadPokemons(): void {
+    this.isListLoading.set(true);
     this.pokemonService.getPokemons(this.limit, this.offset()).subscribe({
       next: (data) => {
         const current = this.pokemons();
         this.pokemons.set([...current, ...data.results]);
+        this.isListLoading.set(false);
       },
-      error: (err) => console.error('Error loading pokemons', err)
+      error: (err) => {
+        console.error('Error loading pokemons', err);
+        this.isListLoading.set(false);
+      }
     });
   }
 
