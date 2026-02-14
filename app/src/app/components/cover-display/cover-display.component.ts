@@ -1,6 +1,7 @@
 import { Component, signal, inject, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IAuthService } from '../../services/auth.service.interface';
+import { SfxService } from '../../services/sfx.service';
 
 @Component({
   selector: 'app-cover-display',
@@ -12,6 +13,7 @@ import { IAuthService } from '../../services/auth.service.interface';
 })
 export class CoverDisplayComponent implements OnInit {
   private readonly authService = inject(IAuthService);
+  public readonly sfx = inject(SfxService);
   
   isLoggedIn = this.authService.isLoggedIn;
   username = signal('');
@@ -37,6 +39,7 @@ export class CoverDisplayComponent implements OnInit {
   }
 
   handleKeyPress(key: string) {
+    this.sfx.play('keyboard');
     this.errorMessage.set(null);
     
     if (key === 'DEL') {
@@ -53,8 +56,10 @@ export class CoverDisplayComponent implements OnInit {
   }
 
   handleAction() {
+    this.sfx.play('pop');
     if (!this.username() || !this.password()) {
       this.errorMessage.set('FIELDS REQUIRED');
+      this.sfx.play('incorrect');
       return;
     }
 
@@ -65,10 +70,12 @@ export class CoverDisplayComponent implements OnInit {
       this.authService.login(this.username(), this.password()).subscribe({
         next: () => {
           this.statusMessage.set('ACCESS GRANTED');
+          this.sfx.play('correct');
           this.isLoading.set(false);
         },
         error: (err) => {
           this.isLoading.set(false);
+          this.sfx.play('incorrect');
           if (err.status === 401) {
             this.errorMessage.set('INVALID CODE');
           } else if (err.status === 404) {
@@ -87,6 +94,7 @@ export class CoverDisplayComponent implements OnInit {
         },
         error: () => {
           this.isLoading.set(false);
+          this.sfx.play('incorrect');
           this.errorMessage.set('REGISTRATION FAILED');
         }
       });
@@ -94,6 +102,7 @@ export class CoverDisplayComponent implements OnInit {
   }
 
   logout() {
+    this.sfx.play('pop');
     this.authService.logout();
     this.username.set('');
     this.password.set('');
@@ -104,6 +113,7 @@ export class CoverDisplayComponent implements OnInit {
   }
 
   cancelRegister() {
+    this.sfx.play('pop');
     this.mode.set('login');
     this.statusMessage.set('IDENTITY VERIFICATION');
     this.errorMessage.set(null);

@@ -2,6 +2,8 @@ import { Component, input, signal, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IPokemonDetails } from '@shared/interfaces/pokemon.interface';
 import { Pokemon3dViewerComponent } from '../pokemon-3d-viewer/pokemon-3d-viewer.component';
+import { SfxService } from '../../services/sfx.service';
+import { inject } from '@angular/core';
 
 @Component({
   selector: 'app-left-screen',
@@ -11,6 +13,7 @@ import { Pokemon3dViewerComponent } from '../pokemon-3d-viewer/pokemon-3d-viewer
   styleUrl: './left-screen.component.scss'
 })
 export class LeftScreenComponent {
+  private readonly sfx = inject(SfxService);
   @ViewChild('scrollContainer') scrollContainer!: ElementRef<HTMLDivElement>;
   @ViewChild(Pokemon3dViewerComponent) pokemon3dViewer?: Pokemon3dViewerComponent;
 
@@ -71,6 +74,9 @@ export class LeftScreenComponent {
   }
 
   onJoystickEnd() {
+    if (this.isDraggingJoystick) {
+      this.sfx.play('thud');
+    }
     this.isDraggingJoystick = false;
     this.joystickPos.set({ x: 0, y: 0 });
   }
@@ -95,6 +101,7 @@ export class LeftScreenComponent {
   }
 
   onDPadPress(dir: 'up' | 'down' | 'left' | 'right') {
+    this.sfx.play('click');
     this.pressedDir.set(dir);
     if (dir === 'up' || dir === 'down') this.scrollContent(dir);
     else this.navigateTab(dir === 'right' ? 'next' : 'prev');

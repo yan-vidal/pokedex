@@ -6,6 +6,7 @@ import { RightScreenComponent } from '../right-screen/right-screen.component';
 import { CoverDisplayComponent } from '../cover-display/cover-display.component';
 import { IPokemon, IPokemonDetails } from '@shared/interfaces/pokemon.interface';
 import { IAuthService } from '../../services/auth.service.interface';
+import { SfxService } from '../../services/sfx.service';
 
 @Component({
   selector: 'app-pokedex-shell',
@@ -18,6 +19,7 @@ import { IAuthService } from '../../services/auth.service.interface';
 export class PokedexShellComponent implements OnInit {
   private readonly pokemonService = inject(PokemonService);
   private readonly authService = inject(IAuthService);
+  private readonly sfx = inject(SfxService);
 
   isOpen = signal(false);
   viewMode = signal<'artwork' | 'details'>('artwork');
@@ -74,9 +76,16 @@ export class PokedexShellComponent implements OnInit {
     this.viewMode.update(v => v === 'artwork' ? 'details' : 'artwork');
   }
 
+  private setOpen(open: boolean): void {
+    if (this.isOpen() === open) return;
+    
+    this.sfx.play('whoosh');
+    this.isOpen.set(open);
+  }
+
   toggleOpen(): void {
     if (!this.authService.isLoggedIn() && !this.isOpen()) return;
-    this.isOpen.update(v => !v);
+    this.setOpen(!this.isOpen());
   }
 
   private dragStartX = 0;
@@ -97,10 +106,9 @@ export class PokedexShellComponent implements OnInit {
     const diffX = endX - this.dragStartX;
     const diffY = endY - this.dragStartY;
 
-    // Only trigger if movement is primarily horizontal (X is at least 2x greater than Y)
     if (Math.abs(diffX) > 80 && Math.abs(diffX) > Math.abs(diffY) * 2) {
-      if (diffX > 0 && !this.isOpen()) this.isOpen.set(true);
-      else if (diffX < 0 && this.isOpen()) this.isOpen.set(false);
+      if (diffX > 0 && !this.isOpen()) this.setOpen(true);
+      else if (diffX < 0 && this.isOpen()) this.setOpen(false);
     }
   }
 }
