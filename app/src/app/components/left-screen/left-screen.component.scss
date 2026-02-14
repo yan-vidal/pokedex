@@ -32,3 +32,66 @@
   75% { transform: translateX(-1px); }
   100% { transform: translateX(0); }
 }
+
+.d-pad-container {
+  perspective: 150px;
+  
+  &.up .d-pad-cross { transform: rotateX(15deg) scale(0.95); }
+  &.down .d-pad-cross { transform: rotateX(-15deg) scale(0.95); }
+  &.left .d-pad-cross { transform: rotateY(-15deg) scale(0.95); }
+  &.right .d-pad-cross { transform: rotateY(15deg) scale(0.95); }
+
+  &:active .d-pad-cross {
+    filter: brightness(0.85);
+  }
+}
+
+.d-pad-cross {
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(145deg, #334155, #1e293b);
+  position: relative;
+  transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+
+  clip-path: polygon(
+    35% 0%, 65% 0%, 
+    65% 35%, 100% 35%, 
+    100% 65%, 65% 65%, 
+    65% 100%, 35% 100%, 
+    35% 65%, 0% 65%, 
+    0% 35%, 35% 35%
+  );
+  
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    background: linear-gradient(145deg, #475569, #334155);
+    z-index: 1;
+    clip-path: polygon(
+      35% 0%, 65% 0%, 
+      65% 35%, 100% 35%, 
+      100% 65%, 65% 65%, 
+      65% 100%, 35% 100%, 
+      35% 65%, 0% 65%, 
+      0% 35%, 35% 35%
+    );
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    background: #0f172a;
+    z-index: -1;
+    clip-path: polygon(
+      35% 0%, 65% 0%, 
+      65% 35%, 100% 35%, 
+      100% 65%, 65% 65%, 
+      65% 100%, 35% 100%, 
+      35% 65%, 0% 65%, 
+      0% 35%, 35% 35%
+    );
+  }
+}
