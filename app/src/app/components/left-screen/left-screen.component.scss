@@ -19,3 +19,16 @@
   from { opacity: 0; transform: translateY(5px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+.sound-bar {
+  animation: soundWave 0.5s ease-in-out infinite alternate;
+  &:nth-child(2) { animation-delay: 0.1s; }
+  &:nth-child(3) { animation-delay: 0.2s; }
+  &:nth-child(4) { animation-delay: 0.15s; }
+  &:nth-child(5) { animation-delay: 0.3s; }
+}
+
+@keyframes soundWave {
+  from { height: 20%; }
+  to { height: 80%; }
+}
