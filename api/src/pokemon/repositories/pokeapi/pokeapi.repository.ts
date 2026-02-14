@@ -9,6 +9,7 @@ import { IPokemonList, IPokemonDetails } from '@shared';
 @Injectable()
 export class PokeApiRepository implements IPokemonRepository {
   private readonly baseUrl: string;
+  private readonly assetsBaseUrl: string;
   private readonly logger = new Logger(PokeApiRepository.name);
 
   constructor(
@@ -16,6 +17,7 @@ export class PokeApiRepository implements IPokemonRepository {
     private readonly configService: ConfigService,
   ) {
     this.baseUrl = this.configService.get<string>('POKEAPI_BASE_URL') || 'https://pokeapi.co/api/v2/pokemon';
+    this.assetsBaseUrl = this.configService.get<string>('POKEMON_3D_ASSETS_BASE_URL') || 'https://raw.githubusercontent.com/Pokemon-3D-api/assets/main/models/pokemon/glb';
   }
 
   async findAll(limit: number, offset: number): Promise<IPokemonList> {
@@ -38,6 +40,11 @@ export class PokeApiRepository implements IPokemonRepository {
       const { data } = await firstValueFrom(
         this.httpService.get<IPokemonDetails>(`${this.baseUrl}/${name}`),
       );
+      
+      if (data && data.id) {
+        data.model3d = `${this.assetsBaseUrl}/${data.id}.glb`;
+      }
+      
       return data;
     } catch (error) {
       const axiosError = error as AxiosError;

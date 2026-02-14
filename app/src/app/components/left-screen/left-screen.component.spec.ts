@@ -50,4 +50,29 @@ describe('LeftScreenComponent', () => {
     expect(img.src).toContain('pika-artwork-url');
     expect(idText).toContain('#25');
   });
+
+  it('should toggle display mode between 2d and 3d', () => {
+    const mockPokemon: Partial<IPokemonDetails> = {
+      id: 25,
+      name: 'pikachu',
+      sprites: { front_default: 'url', back_default: '', front_shiny: '', back_shiny: '' },
+      model3d: 'model-url'
+    };
+
+    fixture.componentRef.setInput('isOpen', true);
+    fixture.componentRef.setInput('pokemon', mockPokemon);
+    fixture.componentRef.setInput('viewMode', 'artwork');
+    fixture.detectChanges();
+
+    expect(component.displayMode()).toBe('2d');
+    
+    const toggleBtn = fixture.nativeElement.querySelector('button');
+    toggleBtn.click();
+    fixture.detectChanges();
+
+    expect(component.displayMode()).toBe('3d');
+    
+    const viewer = fixture.nativeElement.querySelector('app-pokemon-3d-viewer');
+    expect(viewer).toBeTruthy();
+  });
 });

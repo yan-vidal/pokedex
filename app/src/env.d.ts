@@ -4,3 +4,7 @@ declare var process: {
     [key: string]: any;
   };
 };
+
+interface Window {
+  webkitAudioContext: typeof AudioContext;
+}

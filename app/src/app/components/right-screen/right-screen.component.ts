@@ -1,6 +1,8 @@
-import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, output, ChangeDetectionStrategy, ViewChild, ElementRef, afterRender } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IPokemon, IPokemonDetails } from '@shared/interfaces/pokemon.interface';
+import { ISfxService } from '../../services/sfx.service.interface';
+import { inject } from '@angular/core';
 
 @Component({
   selector: 'app-right-screen',
@@ -11,15 +13,46 @@ import { IPokemon, IPokemonDetails } from '@shared/interfaces/pokemon.interface'
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RightScreenComponent {
+  public readonly sfx = inject(ISfxService);
+  @ViewChild('scrollContainer') scrollContainer!: ElementRef<HTMLDivElement>;
+
   protected readonly Math = Math;
 
   pokemons = input<IPokemon[]>([]);
   selectedPokemon = input<IPokemonDetails | null>(null);
   isOpen = input<boolean>(false);
+  isLoading = input<boolean>(false);
 
   onSelect = output<string>();
   onNext = output<void>();
   onPrev = output<void>();
+
+  private lastCount = 0;
+
+  constructor() {
+    afterRender(() => {
+      const currentCount = this.pokemons().length;
+      
+      if (currentCount > this.lastCount && !this.isLoading()) {
+        this.lastCount = currentCount;
+        this.scrollToBottom();
+      }
+      
+      if (currentCount < this.lastCount) {
+        this.lastCount = currentCount;
+      }
+    });
+  }
+
+  private scrollToBottom() {
+    if (this.scrollContainer) {
+      const container = this.scrollContainer.nativeElement;
+      container.scrollTo({
+        top: container.scrollHeight,
+        behavior: 'smooth'
+      });
+    }
+  }
 
   getPokemonId(url: string): string {
     const parts = url.split('/');
