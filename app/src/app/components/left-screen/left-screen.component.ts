@@ -20,11 +20,83 @@ export class LeftScreenComponent {
   tabs = ['BIOS', 'STATS', 'MOVES', 'DATA'];
   isPlaying = signal(false);
   barHeights = signal<number[]>([20, 20, 20, 20, 20, 20, 20]);
+  
+  // Joystick State
+  joystickPos = signal({ x: 0, y: 0 });
+  private isDraggingJoystick = false;
+  private joystickRadius = 12; // Maximum travel distance
+  private lastTriggerTime = 0;
+  private triggerInterval = 150; // ms between repeated actions
 
   private currentAudio: HTMLAudioElement | null = null;
   private audioContext: AudioContext | null = null;
   private analyser: AnalyserNode | null = null;
   private animationFrame: number | null = null;
+
+  // Handlers for Joystick
+  onJoystickStart(event: MouseEvent | TouchEvent) {
+    this.isDraggingJoystick = true;
+    this.handleJoystickMove(event);
+  }
+
+  handleJoystickMove(event: MouseEvent | TouchEvent) {
+    if (!this.isDraggingJoystick) return;
+
+    const clientX = 'touches' in event ? event.touches[0].clientX : event.clientX;
+    const clientY = 'touches' in event ? event.touches[0].clientY : event.clientY;
+
+    // Get joystick container center
+    const stickBase = document.getElementById('joystick-base');
+    if (!stickBase) return;
+    
+    const rect = stickBase.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    // Calculate delta and clamp to radius
+    let dx = clientX - centerX;
+    let dy = clientY - centerY;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    if (distance > this.joystickRadius) {
+      dx = (dx / distance) * this.joystickRadius;
+      dy = (dy / distance) * this.joystickRadius;
+    }
+
+    this.joystickPos.set({ x: dx, y: dy });
+    this.detectJoystickAction(dx, dy);
+  }
+
+  onJoystickEnd() {
+    this.isDraggingJoystick = false;
+    this.joystickPos.set({ x: 0, y: 0 });
+  }
+
+  private detectJoystickAction(x: number, y: number) {
+    const now = Date.now();
+    if (now - this.lastTriggerTime < this.triggerInterval) return;
+
+    const threshold = 8; // Min distance to trigger action
+    
+    // Check dominant direction
+    if (Math.abs(x) > Math.abs(y)) {
+      if (x > threshold) {
+        this.navigateTab('next');
+        this.lastTriggerTime = now;
+      } else if (x < -threshold) {
+        this.navigateTab('prev');
+        this.lastTriggerTime = now;
+      }
+    } else {
+      if (y > threshold) {
+        this.scrollContent('down');
+        this.lastTriggerTime = now;
+      } else if (y < -threshold) {
+        this.scrollContent('up');
+        this.lastTriggerTime = now;
+      }
+    }
+  }
 
   navigateTab(direction: 'prev' | 'next') {
     this.activeTab.update(current => {
