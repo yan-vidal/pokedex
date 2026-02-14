@@ -12,12 +12,13 @@ import { Pokemon3dViewerComponent } from '../pokemon-3d-viewer/pokemon-3d-viewer
 })
 export class LeftScreenComponent {
   @ViewChild('scrollContainer') scrollContainer!: ElementRef<HTMLDivElement>;
+  @ViewChild(Pokemon3dViewerComponent) pokemon3dViewer?: Pokemon3dViewerComponent;
 
   pokemon = input<IPokemonDetails | null>(null);
   viewMode = input<'artwork' | 'details'>('artwork');
   isOpen = input<boolean>(false);
 
-  displayMode = signal<'2d' | '3d'>('2d');
+  displayMode = signal<'2d' | '3d'>('3d');
   activeTab = signal<number>(0);
   tabs = ['BIOS', 'STATS', 'MOVES', 'DATA'];
   isPlaying = signal(false);
@@ -75,6 +76,12 @@ export class LeftScreenComponent {
   }
 
   private detectJoystickAction(x: number, y: number) {
+    // Stick (Joystick) Responsability: ORBITING
+    if (this.viewMode() === 'artwork' && this.displayMode() === '3d') {
+      this.pokemon3dViewer?.rotateCamera(x, -y);
+      return;
+    }
+
     const now = Date.now();
     if (now - this.lastTriggerTime < this.triggerInterval) return;
 
@@ -101,6 +108,13 @@ export class LeftScreenComponent {
   }
 
   navigateTab(direction: 'prev' | 'next') {
+    // D-pad Responsability: PANNING (Horizontal)
+    if (this.viewMode() === 'artwork' && this.displayMode() === '3d') {
+      if (direction === 'next') this.pokemon3dViewer?.moveCamera('right');
+      else this.pokemon3dViewer?.moveCamera('left');
+      return;
+    }
+
     this.activeTab.update(current => {
       if (direction === 'next') return (current + 1) % this.tabs.length;
       return current === 0 ? this.tabs.length - 1 : current - 1;
@@ -108,6 +122,13 @@ export class LeftScreenComponent {
   }
 
   scrollContent(direction: 'up' | 'down') {
+    // D-pad Responsability: PANNING (Vertical)
+    if (this.viewMode() === 'artwork' && this.displayMode() === '3d') {
+      if (direction === 'up') this.pokemon3dViewer?.moveCamera('up');
+      else this.pokemon3dViewer?.moveCamera('down');
+      return;
+    }
+
     if (!this.scrollContainer) return;
     const amount = 40;
     this.scrollContainer.nativeElement.scrollBy({
