@@ -2,7 +2,7 @@ import { Component, input, signal, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IPokemonDetails } from '@shared/interfaces/pokemon.interface';
 import { Pokemon3dViewerComponent } from '../pokemon-3d-viewer/pokemon-3d-viewer.component';
-import { SfxService } from '../../services/sfx.service';
+import { ISfxService } from '../../services/sfx.service.interface';
 import { inject } from '@angular/core';
 
 @Component({
@@ -13,7 +13,7 @@ import { inject } from '@angular/core';
   styleUrl: './left-screen.component.scss'
 })
 export class LeftScreenComponent {
-  private readonly sfx = inject(SfxService);
+  private readonly sfx = inject(ISfxService);
   @ViewChild('scrollContainer') scrollContainer!: ElementRef<HTMLDivElement>;
   @ViewChild(Pokemon3dViewerComponent) pokemon3dViewer?: Pokemon3dViewerComponent;
 

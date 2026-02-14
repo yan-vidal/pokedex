@@ -1,7 +1,7 @@
 import { Component, signal, inject, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IAuthService } from '../../services/auth.service.interface';
-import { SfxService } from '../../services/sfx.service';
+import { ISfxService } from '../../services/sfx.service.interface';
 
 @Component({
   selector: 'app-cover-display',
@@ -13,7 +13,7 @@ import { SfxService } from '../../services/sfx.service';
 })
 export class CoverDisplayComponent implements OnInit {
   private readonly authService = inject(IAuthService);
-  public readonly sfx = inject(SfxService);
+  public readonly sfx = inject(ISfxService);
   
   isLoggedIn = this.authService.isLoggedIn;
   username = signal('');

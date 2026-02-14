@@ -9,6 +9,8 @@ import { PokemonService } from "./services/pokemon.service";
 import { PokedexShellComponent } from "./components/pokedex-shell/pokedex-shell.component";
 import { IAuthService } from "./services/auth.service.interface";
 import { AuthService } from "./services/auth.service";
+import { ISfxService } from "./services/sfx.service.interface";
+import { SfxService } from "./services/sfx.service";
 import { authInterceptor } from "./interceptors/auth.interceptor";
 
 @NgModule({
@@ -20,7 +22,8 @@ import { authInterceptor } from "./interceptors/auth.interceptor";
   providers: [
     PokemonService,
     provideHttpClient(withInterceptors([authInterceptor])),
-    { provide: IAuthService, useClass: AuthService }
+    { provide: IAuthService, useClass: AuthService },
+    { provide: ISfxService, useClass: SfxService }
   ],
   declarations: [
     PokedexAppComponent,

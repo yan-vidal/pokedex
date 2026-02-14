@@ -6,7 +6,7 @@ import { RightScreenComponent } from '../right-screen/right-screen.component';
 import { CoverDisplayComponent } from '../cover-display/cover-display.component';
 import { IPokemon, IPokemonDetails } from '@shared/interfaces/pokemon.interface';
 import { IAuthService } from '../../services/auth.service.interface';
-import { SfxService } from '../../services/sfx.service';
+import { ISfxService } from '../../services/sfx.service.interface';
 
 @Component({
   selector: 'app-pokedex-shell',
@@ -19,7 +19,7 @@ import { SfxService } from '../../services/sfx.service';
 export class PokedexShellComponent implements OnInit {
   private readonly pokemonService = inject(PokemonService);
   private readonly authService = inject(IAuthService);
-  private readonly sfx = inject(SfxService);
+  private readonly sfx = inject(ISfxService);
 
   isOpen = signal(false);
   viewMode = signal<'artwork' | 'details'>('artwork');

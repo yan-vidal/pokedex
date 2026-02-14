@@ -1,7 +1,7 @@
 import { Component, input, output, ChangeDetectionStrategy, ViewChild, ElementRef, afterRender } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IPokemon, IPokemonDetails } from '@shared/interfaces/pokemon.interface';
-import { SfxService } from '../../services/sfx.service';
+import { ISfxService } from '../../services/sfx.service.interface';
 import { inject } from '@angular/core';
 
 @Component({
@@ -13,7 +13,7 @@ import { inject } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RightScreenComponent {
-  public readonly sfx = inject(SfxService);
+  public readonly sfx = inject(ISfxService);
   @ViewChild('scrollContainer') scrollContainer!: ElementRef<HTMLDivElement>;
 
   protected readonly Math = Math;
