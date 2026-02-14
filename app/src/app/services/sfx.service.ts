@@ -165,7 +165,7 @@ export class SfxService implements ISfxService {
 
   private initAudio() {
     if (!this.audioCtx) {
-      const AudioContextClass = (window as any).AudioContext || (window as any).webkitAudioContext;
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
       if (AudioContextClass) this.audioCtx = new AudioContextClass();
     }
     if (this.audioCtx?.state === 'suspended') this.audioCtx.resume();
