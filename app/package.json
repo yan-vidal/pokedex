@@ -28,6 +28,7 @@
     "@angular/platform-browser-dynamic": "^18.0.1",
     "@angular/router": "^18.0.1",
     "rxjs": "^7.8.1",
+    "three": "^0.182.0",
     "tslib": "^2.6.3",
     "zone.js": "~0.14.6"
   },
@@ -37,6 +38,7 @@
     "@angular/compiler-cli": "^18.0.1",
     "@ngx-env/builder": "^18.0.2",
     "@types/jasmine": "^6.0.0",
+    "@types/three": "^0.182.0",
     "autoprefixer": "^10.4.24",
     "jasmine-core": "^6.0.1",
     "karma": "^6.4.4",

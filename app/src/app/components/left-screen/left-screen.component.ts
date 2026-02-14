@@ -1,11 +1,12 @@
 import { Component, input, signal, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IPokemonDetails } from '@shared/interfaces/pokemon.interface';
+import { Pokemon3dViewerComponent } from '../pokemon-3d-viewer/pokemon-3d-viewer.component';
 
 @Component({
   selector: 'app-left-screen',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, Pokemon3dViewerComponent],
   templateUrl: './left-screen.component.html',
   styleUrl: './left-screen.component.scss'
 })
@@ -16,6 +17,7 @@ export class LeftScreenComponent {
   viewMode = input<'artwork' | 'details'>('artwork');
   isOpen = input<boolean>(false);
 
+  displayMode = signal<'2d' | '3d'>('2d');
   activeTab = signal<number>(0);
   tabs = ['BIOS', 'STATS', 'MOVES', 'DATA'];
   isPlaying = signal(false);

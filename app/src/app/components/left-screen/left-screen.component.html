@@ -1,4 +1,8 @@
-<div class="relative w-80 h-[520px] bg-red-600 rounded-l-2xl border-4 border-red-800 shadow-2xl flex flex-col p-6">
+<div class="relative w-80 h-[520px] bg-red-600 rounded-l-2xl border-4 border-red-800 shadow-2xl flex flex-col p-6"
+     (mousedown)="$event.stopPropagation()"
+     (touchstart)="$event.stopPropagation()"
+     (mouseup)="$event.stopPropagation()"
+     (touchend)="$event.stopPropagation()">
     
     <!-- Top Relief Illusion (Shadow/Highlight) -->
     <svg class="absolute inset-0 w-full h-full pointer-events-none z-0" viewBox="0 0 320 520" preserveAspectRatio="none">
@@ -42,11 +46,26 @@
             
             @if (pokemon(); as pk) {
               @if (viewMode() === 'artwork') {
-                <img 
-                  [src]="pk.sprites.other?.['official-artwork']?.front_default || pk.sprites.front_default" 
-                  [alt]="pk.name"
-                  class="w-44 h-44 object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.4)] animate-fade-in"
-                >
+                <div class="absolute top-2 right-2 z-30">
+                  <button 
+                    (click)="displayMode.set(displayMode() === '2d' ? '3d' : '2d')"
+                    class="bg-slate-800/80 hover:bg-slate-700 text-[8px] text-white px-2 py-1 rounded border border-slate-600 font-mono transition-colors shadow-lg active:scale-95"
+                  >
+                    {{ displayMode() === '2d' ? '3D VIEW' : '2D VIEW' }}
+                  </button>
+                </div>
+
+                @if (displayMode() === '2d') {
+                  <img 
+                    [src]="pk.sprites.other?.['official-artwork']?.front_default || pk.sprites.front_default" 
+                    [alt]="pk.name"
+                    class="w-44 h-44 object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.4)] animate-fade-in"
+                  >
+                } @else {
+                  <div class="w-full h-full animate-fade-in">
+                    <app-pokemon-3d-viewer [modelUrl]="pk.model3d"></app-pokemon-3d-viewer>
+                  </div>
+                }
                 <div class="absolute bottom-2 left-2 text-green-500 font-mono text-xs z-20">#{{pk.id}}</div>
               } @else {
                 <div class="w-full h-full p-3 z-20 font-mono text-green-400 flex flex-col animate-fade-in">
