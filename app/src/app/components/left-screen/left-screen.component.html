@@ -201,8 +201,8 @@
           </svg>
         </button>
         <div class="flex flex-col gap-1">
-          <div class="w-8 h-1 bg-slate-800 rounded-full"></div>
-          <div class="w-8 h-1 bg-slate-800 rounded-full"></div>
+          <div class="w-8 h-1 bg-slate-800 rounded-full transition-transform" [class.vibrate-bar]="isPlaying()"></div>
+          <div class="w-8 h-1 bg-slate-800 rounded-full transition-transform" [class.vibrate-bar]="isPlaying()"></div>
         </div>
       </div>
     </div>
@@ -226,11 +226,9 @@
         
         @if (isPlaying()) {
           <div class="flex items-end gap-1 h-6 z-20">
-            <div class="sound-bar w-1 bg-slate-900 rounded-full"></div>
-            <div class="sound-bar w-1 bg-slate-900 rounded-full"></div>
-            <div class="sound-bar w-1 bg-slate-900 rounded-full"></div>
-            <div class="sound-bar w-1 bg-slate-900 rounded-full"></div>
-            <div class="sound-bar w-1 bg-slate-900 rounded-full"></div>
+            @for (height of barHeights(); track $index) {
+              <div class="w-1 bg-slate-900 rounded-full transition-all duration-75" [style.height.%]="height"></div>
+            }
           </div>
         } @else {
           <div class="text-slate-900 font-mono text-[7px] font-bold animate-pulse tracking-tighter">OS READY</div>

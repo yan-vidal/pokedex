@@ -19,7 +19,12 @@ export class LeftScreenComponent {
   activeTab = signal<number>(0);
   tabs = ['BIOS', 'STATS', 'MOVES', 'DATA'];
   isPlaying = signal(false);
+  barHeights = signal<number[]>([20, 20, 20, 20, 20, 20, 20]);
+
   private currentAudio: HTMLAudioElement | null = null;
+  private audioContext: AudioContext | null = null;
+  private analyser: AnalyserNode | null = null;
+  private animationFrame: number | null = null;
 
   navigateTab(direction: 'prev' | 'next') {
     this.activeTab.update(current => {
@@ -42,21 +47,88 @@ export class LeftScreenComponent {
     const cryUrl = pk?.cries?.legacy || pk?.cries?.latest;
     
     if (cryUrl) {
-      if (this.currentAudio) {
-        this.currentAudio.pause();
-        this.currentAudio = null;
-      }
+      this.stopAudio();
 
       this.currentAudio = new Audio(cryUrl);
+      this.currentAudio.crossOrigin = "anonymous";
       this.currentAudio.volume = 0.3;
       
+      this.setupAudioAnalysis();
+
       this.isPlaying.set(true);
-      this.currentAudio.play().catch(err => {
+      this.currentAudio.play().then(() => {
+        this.startAnalysisLoop();
+      }).catch(err => {
         console.warn('Audio play blocked or failed', err);
         this.isPlaying.set(false);
       });
 
-      this.currentAudio.onended = () => this.isPlaying.set(false);
+      this.currentAudio.onended = () => this.stopAudio();
+    }
+  }
+
+  private setupAudioAnalysis() {
+    if (!this.currentAudio) return;
+    
+    if (!this.audioContext) {
+      this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    }
+
+    this.analyser = this.audioContext.createAnalyser();
+    this.analyser.fftSize = 256; 
+    this.analyser.smoothingTimeConstant = 0.6;
+    
+    const source = this.audioContext.createMediaElementSource(this.currentAudio);
+    source.connect(this.analyser);
+    this.analyser.connect(this.audioContext.destination);
+  }
+
+  private startAnalysisLoop() {
+    const bufferLength = this.analyser!.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
+
+    const update = () => {
+      if (!this.isPlaying()) return;
+      
+      this.analyser!.getByteFrequencyData(dataArray);
+      
+      let totalAmplitude = 0;
+      let weightedSum = 0;
+      for (let i = 0; i < dataArray.length; i++) {
+        totalAmplitude += dataArray[i];
+        weightedSum += dataArray[i] * i;
+      }
+      
+      const centroid = totalAmplitude > 0 ? weightedSum / totalAmplitude : bufferLength / 4;
+      
+      const step = Math.max(2, centroid / 4);
+      const newHeights = [];
+      
+      for (let i = -3; i <= 3; i++) {
+        const targetIdx = Math.round(centroid + (i * step));
+        const safeIdx = Math.max(0, Math.min(bufferLength - 1, targetIdx));
+        const val = dataArray[safeIdx];
+        
+        const height = Math.max(15, (val / 255) * 100 * 1.2);
+        newHeights.push(height);
+      }
+      
+      this.barHeights.set(newHeights);
+      this.animationFrame = requestAnimationFrame(update);
+    };
+
+    update();
+  }
+
+  private stopAudio() {
+    this.isPlaying.set(false);
+    this.barHeights.set([20, 20, 20, 20, 20, 20, 20]);
+    if (this.currentAudio) {
+      this.currentAudio.pause();
+      this.currentAudio = null;
+    }
+    if (this.animationFrame) {
+      cancelAnimationFrame(this.animationFrame);
     }
   }
 }
