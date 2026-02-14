@@ -73,20 +73,28 @@ export class PokedexShellComponent implements OnInit {
     this.isOpen.update(v => !v);
   }
 
-  private dragStart = 0;
+  private dragStartX = 0;
+  private dragStartY = 0;
   
   onMouseDown(event: MouseEvent | TouchEvent): void {
     if (!this.authService.isLoggedIn() && !this.isOpen()) return;
-    this.dragStart = 'touches' in event ? event.touches[0].clientX : event.clientX;
+    this.dragStartX = 'touches' in event ? event.touches[0].clientX : event.clientX;
+    this.dragStartY = 'touches' in event ? event.touches[0].clientY : event.clientY;
   }
 
   onMouseUp(event: MouseEvent | TouchEvent): void {
     if (!this.authService.isLoggedIn() && !this.isOpen()) return;
     
     const endX = 'touches' in event ? event.changedTouches[0].clientX : event.clientX;
-    const diff = endX - this.dragStart;
+    const endY = 'touches' in event ? event.changedTouches[0].clientY : event.clientY;
+    
+    const diffX = endX - this.dragStartX;
+    const diffY = endY - this.dragStartY;
 
-    if (diff > 80 && !this.isOpen()) this.isOpen.set(true);
-    else if (diff < -80 && this.isOpen()) this.isOpen.set(false);
+    // Only trigger if movement is primarily horizontal (X is at least 2x greater than Y)
+    if (Math.abs(diffX) > 80 && Math.abs(diffX) > Math.abs(diffY) * 2) {
+      if (diffX > 0 && !this.isOpen()) this.isOpen.set(true);
+      else if (diffX < 0 && this.isOpen()) this.isOpen.set(false);
+    }
   }
 }

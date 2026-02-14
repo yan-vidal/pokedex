@@ -1,4 +1,5 @@
 .custom-scrollbar {
+  touch-action: pan-y;
   &::-webkit-scrollbar {
     width: 4px;
   }
