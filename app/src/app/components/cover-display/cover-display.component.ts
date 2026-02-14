@@ -25,7 +25,7 @@ export class CoverDisplayComponent implements OnInit {
   statusMessage = signal<string>('IDENTITY VERIFICATION');
   isLoading = signal(false);
 
-  keyboardKeys = ['1','2','3','A','B','C','4','5','6','D','E','F','7','8','9','G','H','I','0','J','K','L'];
+  keyboardKeys = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z', '0','1','2','3','4','5','6','7','8','9'];
 
   ngOnInit() {
     if (this.isLoggedIn()) {
